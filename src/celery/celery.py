@@ -11,7 +11,7 @@ model_path = "meta-llama/Llama-2-7b-chat-hf"
 
 
 def make_celery(app_name=__name__):
-    backend = broker = "redis://llama2_redis_1:6379/0"
+    backend = broker = "redis://redis:6379/0"
     return Celery(app_name, backend=backend, broker=broker)
 
 
