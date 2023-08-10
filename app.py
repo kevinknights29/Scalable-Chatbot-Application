@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from src.celery.worker import generate_text_task
+from src.celery.celery import generate_text_task
 
 load_dotenv()
 
