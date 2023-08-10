@@ -11,7 +11,7 @@ services:
       - redis
   worker:
     build: .
-    command: celery -A celery_worker worker --loglevel=info
+    command: celery -A src worker --loglevel=info
     volumes:
       - .:/app
     depends_on:
