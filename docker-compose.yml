@@ -9,6 +9,9 @@ services:
       - 8000:80
     depends_on:
       - redis
+    networks:
+      - app_network
+
   worker:
     build: .
     command: celery -A src worker --loglevel=info
@@ -16,7 +19,15 @@ services:
       - .:/app
     depends_on:
       - redis
+    networks:
+      - app_network
+
   redis:
     image: "redis:alpine"
     ports:
       - 6379:6379
+    networks:
+      - app_network
+
+networks:
+  app_network:
