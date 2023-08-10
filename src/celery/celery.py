@@ -15,7 +15,7 @@ def make_celery(app_name=__name__):
     return Celery(app_name, backend=backend, broker=broker)
 
 
-celery = make_celery()
+celery_app = make_celery()
 
 
 @signals.worker_process_init.connect
@@ -24,7 +24,7 @@ def setup_model(signal, sender, **kwargs):
     model_loader = ModelLoader(model_path)
 
 
-@celery.task
+@celery_app.task
 def generate_text_task(prompt):
     time, memory, outputs = generate_output(
         prompt,
@@ -35,4 +35,4 @@ def generate_text_task(prompt):
 
 
 if __name__ == "__main__":
-    celery.start()
+    celery_app.start()
