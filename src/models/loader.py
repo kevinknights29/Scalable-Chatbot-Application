@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import os
 
+import torch
+from dotenv import find_dotenv
 from dotenv import load_dotenv
 from transformers import AutoConfig
 from transformers import AutoModelForCausalLM
 from transformers import AutoTokenizer
 
-load_dotenv()
+
+load_dotenv(find_dotenv())
 
 
 class ModelLoader:
@@ -30,7 +33,8 @@ class ModelLoader:
             config=self.config,
             trust_remote_code=True,
             load_in_4bit=True,
-            device_map="auto",
+            device_map="cuda:0" if torch.cuda.is_available() else "cpu",
+            torch_dtype=torch.float16,
             use_auth_token=os.getenv("HUGGINGFACE_TOKEN"),
         )
         return model
