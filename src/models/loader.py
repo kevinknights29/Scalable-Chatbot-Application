@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from transformers import AutoConfig
 from transformers import AutoModelForCausalLM
 from transformers import AutoTokenizer
+from transformers import BitsAndBytesConfig
 
 
 load_dotenv(find_dotenv())
@@ -28,13 +29,25 @@ class ModelLoader:
         )
 
     def _load_model(self):
-        model = AutoModelForCausalLM.from_pretrained(
+        if torch.cuda.is_available():
+            return AutoModelForCausalLM.from_pretrained(
+                self.model_path,
+                config=self.config,
+                trust_remote_code=True,
+                device_map="cuda:0",  # or "auto"
+                use_auth_token=os.getenv("HUGGINGFACE_TOKEN"),
+            )
+        return AutoModelForCausalLM.from_pretrained(
             self.model_path,
             config=self.config,
             trust_remote_code=True,
-            load_in_4bit=True,
-            device_map="cuda:0" if torch.cuda.is_available() else "cpu",
+            load_in_8bit=True,
+            device_map="cpu",
             torch_dtype=torch.float16,
+            quantization_config=BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_compute_dtype=torch.bfloat16,
+                llm_int8_enable_fp32_cpu_offload=True,
+            ),
             use_auth_token=os.getenv("HUGGINGFACE_TOKEN"),
         )
-        return model

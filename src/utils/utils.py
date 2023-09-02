@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import functools
+import resource
 import time
 
-import psutil
 import torch
 from transformers import AutoModelForCausalLM
 from transformers import AutoTokenizer
@@ -32,10 +32,10 @@ def memory_decorator(func):
             peak_mem_consumption = peak_mem / 1e9
             return peak_mem_consumption, exec_time, result
         else:
-            peak_mem_start = psutil.virtual_memory().peak_wset / (1024**3)
+            peak_mem_start = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
             result, exec_time = func(*args, **kwargs)
-            peak_mem_end = psutil.virtual_memory().peak_wset / (1024**3)
-            peak_mem_consumption = peak_mem_end - peak_mem_start
+            peak_mem_end = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
+            peak_mem_consumption = (peak_mem_end - peak_mem_start) / 1024
             return peak_mem_consumption, exec_time, result
 
     return wrapper
