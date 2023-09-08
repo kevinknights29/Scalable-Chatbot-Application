@@ -7,7 +7,7 @@ from src.models.loader import ModelLoader
 from src.utils.utils import generate_output
 
 model_loader = None
-model_path = "meta-llama/Llama-2-7b-chat-hf"
+model_path = "../../models/"
 
 
 def make_celery(app_name=__name__):
