@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from celery import Celery
 from celery import signals
 
@@ -7,7 +9,12 @@ from src.models.loader import ModelLoader
 from src.utils.utils import generate_output
 
 model_loader = None
-model_path = "../../models/"
+model_path = os.path.join(
+    os.path.dirname(
+        os.path.dirname(os.path.dirname(__file__)),
+    ),
+    "models",
+)
 
 
 def make_celery(app_name=__name__):
