@@ -3,8 +3,6 @@ services:
   web:
     build: .
     command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "80"]
-    volumes:
-      - .:/app
     ports:
       - 8000:80
     depends_on:
@@ -16,7 +14,7 @@ services:
     build: .
     command: celery -A src worker --loglevel=info
     volumes:
-      - .:/app
+      - ./models:/app/models/
     depends_on:
       - redis
     networks:
