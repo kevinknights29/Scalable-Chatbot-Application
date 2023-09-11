@@ -1,7 +1,6 @@
 FROM python:3.9-slim-buster
 
 WORKDIR /app
-COPY models ./models/
 COPY src ./src/
 COPY app.py .
 COPY requirements.txt .
@@ -13,7 +12,8 @@ RUN apt update && \
 
 RUN pip install --upgrade pip
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt && \
+    rm requirements.txt
 
 ENV PYTHONPATH="${PYTHONPATH}:."
 
